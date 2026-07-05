@@ -87,7 +87,7 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "🔄 Transaksi Sparepart (Masuk/Keluar)", 
     "🔧 Servis & Perbaikan Alat",  # <-- Tab Baru Anda
     "➕ Tambah Master Sparepart",
-    "📊 Laporan Audit Sparepart"
+    "📊 Riwayat Servis dan Sparepart"
 ])
 
 # ==================== IMPORT MODULAR TABS ====================

@@ -10,8 +10,6 @@ def popup_sukses(pesan, judul="🚨 Aksi Berhasil"):
         st.rerun()
 
 def show(jalankan_query, eksekusi_sql):
-    st.header("📋 Laporan Penggunaan & Mutasi Barang")
-    
     if "notif_audit" in st.session_state:
         info_notif = st.session_state["notif_audit"]
         del st.session_state["notif_audit"]
@@ -40,7 +38,7 @@ def show(jalankan_query, eksekusi_sql):
     # --- BAGIAN 1: TABEL MUTASI LOGISTIK SPAREPART ---
     # =========================================================================
     st.markdown("###")
-    st.subheader(f"📦 Mutasi Transaksi Gudang Logistik ({bulan_pilihan} {tahun_pilihan})")
+    st.subheader(f"📦 Riwayat Penggunaan Sparepart ({bulan_pilihan} {tahun_pilihan})")
     
     query_audit_master = """
     SELECT 
