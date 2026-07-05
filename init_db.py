@@ -36,6 +36,34 @@ CREATE TABLE IF NOT EXISTS stock_transactions (
 )
 ''')
 
+# Membuat tabel log servis yang dipakai oleh aplikasi
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS maintenance_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    entry_date TEXT NOT NULL,
+    device_name TEXT NOT NULL,
+    device_code TEXT NOT NULL,
+    damage_info TEXT NOT NULL,
+    completion_date TEXT,
+    action_taken TEXT,
+    notes TEXT,
+    sparepart_id INTEGER,
+    sparepart_qty INTEGER DEFAULT 0,
+    FOREIGN KEY (sparepart_id) REFERENCES spareparts(id) ON DELETE SET NULL
+)
+''')
+
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS maintenance_details (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    maintenance_id INTEGER,
+    sparepart_id INTEGER,
+    quantity INTEGER,
+    FOREIGN KEY (maintenance_id) REFERENCES maintenance_logs(id) ON DELETE CASCADE,
+    FOREIGN KEY (sparepart_id) REFERENCES spareparts(id) ON DELETE SET NULL
+)
+''')
+
 # Isi data contoh (dummy data) agar tidak kosong saat pertama dibuka
 try:
     cursor.execute("INSERT INTO categories (name) VALUES ('Mekanikal'), ('Elektrikal')")
