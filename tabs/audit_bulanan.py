@@ -75,6 +75,15 @@ def show(jalankan_query, eksekusi_sql):
     if df_audit.empty:
         st.info(f"Tidak ada riwayat transaksi logistik barang pada bulan {bulan_pilihan} {tahun_pilihan}.")
     else:
+        df_audit = df_audit.reset_index(drop=True)
+        df_audit.index = df_audit.index + 1
+
+        if {'ID Transaksi', 'Kode Part', 'Nama Barang', 'Tanggal & Jam'}.issubset(df_audit.columns):
+            cols = ['Tanggal & Jam', 'Nama Barang', 'Kode Part']
+            cols += [c for c in df_audit.columns if c not in ['Tanggal & Jam', 'Nama Barang', 'Kode Part', 'ID Transaksi']]
+            cols += ['ID Transaksi']
+            df_audit = df_audit[cols]
+
         st.write(f"Menampilkan **{len(df_audit)} transaksi barang**:")
         st.dataframe(df_audit, use_container_width=True)
         
@@ -111,15 +120,12 @@ def show(jalankan_query, eksekusi_sql):
     SELECT 
         m.id AS 'ID Servis',
         m.entry_date AS 'Waktu Masuk',
-        m.device_code AS 'Kode Alat',
         m.device_name AS 'Nama Alat',
+        m.device_code AS 'Kode Alat',
         m.damage_info AS 'Kerusakan',
         m.completion_date AS 'Waktu Selesai',
-        m.action_taken AS 'Tindakan Perbaikan',
-        s.name AS 'Sparepart Digunakan',
-        m.sparepart_qty AS 'Jumlah Part (Pcs)'
+        m.action_taken AS 'Tindakan Perbaikan'
     FROM maintenance_logs m
-    LEFT JOIN spareparts s ON m.sparepart_id = s.id
     ORDER BY m.entry_date ASC
     """
     
@@ -142,8 +148,12 @@ def show(jalankan_query, eksekusi_sql):
         if df_servis.empty:
             st.info(f"Tidak ada riwayat aktivitas servis mesin pada bulan {bulan_pilihan} {tahun_pilihan}.")
         else:
-            df_servis['Sparepart Digunakan'] = df_servis['Sparepart Digunakan'].fillna("Tanpa Ganti Sparepart")
-            df_servis['Jumlah Part (Pcs)'] = df_servis['Jumlah Part (Pcs)'].fillna(0).astype(int)
+            if 'ID Servis' in df_servis.columns:
+                cols = [c for c in df_servis.columns if c != 'ID Servis'] + ['ID Servis']
+                df_servis = df_servis[cols]
+
+            df_servis = df_servis.reset_index(drop=True)
+            df_servis.index = df_servis.index + 1
 
             st.write(f"Menampilkan **{len(df_servis)} riwayat perbaikan mesin**:")
             st.dataframe(df_servis, use_container_width=True)

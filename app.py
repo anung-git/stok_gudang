@@ -4,7 +4,7 @@ import pandas as pd
 
 # ==================== 100% OFFLINE CONFIGURATION ====================
 st.set_page_config(page_title="Stok & Servis Gudang", page_icon="📦", layout="wide")
-st.title("📦 Sistem Manajemen Inventaris & Perbaikan Internal")
+st.title("📦 Sistem Servis dan Sparepart Larissa Simanjuntak")
 
 # ==================== INITIALIZE DATABASE & TABLES ====================
 def inisialisasi_database():
@@ -96,11 +96,11 @@ def eksekusi_sql(sql, params=()):
 # ==================== INTERFACE TABS CONFIGURATION ====================
 # Membuat 5 Halaman/Tab Mandiri (Menambahkan Tab Servis Alat)
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "📦 Stok Aktual & Pencarian", 
-    "🔄 Transaksi (Masuk/Keluar)", 
+    "📦 Stok Aktual & Pencarian Sparepart", 
+    "🔄 Transaksi Sparepart (Masuk/Keluar)", 
     "🔧 Servis & Perbaikan Alat",  # <-- Tab Baru Anda
-    "➕ Tambah Master Barang",
-    "📊 Laporan Audit Bulanan"
+    "➕ Tambah Master Sparepart",
+    "📊 Laporan Audit Sparepart"
 ])
 
 # ==================== IMPORT MODULAR TABS ====================
