@@ -52,19 +52,6 @@ def inisialisasi_database():
     );
     """)
 
-
-    # Masukkan ini di area fungsi inisialisasi database Anda
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS maintenance_details (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        maintenance_id INTEGER,
-        sparepart_id INTEGER,
-        quantity INTEGER,
-        FOREIGN KEY (maintenance_id) REFERENCES maintenance_logs(id),
-        FOREIGN KEY (sparepart_id) REFERENCES spareparts(id)
-    );
-    """)
-        
     conn.commit()
     conn.close()
 

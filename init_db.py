@@ -53,17 +53,6 @@ CREATE TABLE IF NOT EXISTS maintenance_logs (
 )
 ''')
 
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS maintenance_details (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    maintenance_id INTEGER,
-    sparepart_id INTEGER,
-    quantity INTEGER,
-    FOREIGN KEY (maintenance_id) REFERENCES maintenance_logs(id) ON DELETE CASCADE,
-    FOREIGN KEY (sparepart_id) REFERENCES spareparts(id) ON DELETE SET NULL
-)
-''')
-
 # Isi data contoh (dummy data) agar tidak kosong saat pertama dibuka
 try:
     cursor.execute("INSERT INTO categories (name) VALUES ('Mekanikal'), ('Elektrikal')")
