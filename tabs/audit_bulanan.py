@@ -28,10 +28,12 @@ def show(jalankan_query, eksekusi_sql):
         angka_bulan = str(list_bulan.index(bulan_pilihan) + 1).zfill(2)
 
     with kolom2:
+        list_tahun = list(range(2026, 2051))
+        tahun_default = datetime.now().year
         tahun_pilihan = st.selectbox(
-            "Pilih Tahun", 
-            options=[2025, 2026, 2027, 2028, 2029, 2030],
-            index=1  # Default ke tahun 2026
+            "Pilih Tahun",
+            options=list_tahun,
+            index=list_tahun.index(tahun_default)
         )
     
     # =========================================================================
