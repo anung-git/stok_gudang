@@ -3,13 +3,13 @@ from datetime import datetime
 
 @st.dialog("Notifikasi Transaksi")
 def popup_sukses_transaksi(pesan):
-    st.markdown("### 🔄 Transaksi Berhasil!")
+    st.markdown("### Transaksi Berhasil!")
     st.success(pesan)
     if st.button("Oke, Tutup"):
         st.rerun()
 
 def show(jalankan_query, eksekusi_sql):
-    st.header("🔄 Input Transaksi Logistik (Masuk / Keluar)")
+    st.header("Input Transaksi Logistik (Masuk / Keluar)")
 
     if "notif_transaksi" in st.session_state:
         pesan_saved = st.session_state["notif_transaksi"]
@@ -20,14 +20,14 @@ def show(jalankan_query, eksekusi_sql):
     df_spareparts = jalankan_query("SELECT id, code, name FROM spareparts")
     
     if df_spareparts.empty:
-        st.warning("⚠️ Belum ada data barang di Master Gudang. Silakan isi tab 'Tambah Master Barang' terlebih dahulu.")
+        st.warning("Belum ada data barang di Master Gudang. Silakan isi tab 'Tambah Master Barang' terlebih dahulu.")
         return
 
     # Buat teks gabungan untuk tampilan pilihan di selectbox
     df_spareparts['display'] = df_spareparts['code'] + " - " + df_spareparts['name']
 
     # --- FORM INPUT TRANSAKSI ---
-    st.subheader("📝 Detail Mutasi Barang")
+    st.subheader("Detail Mutasi Barang")
     
     # 1. Kolom Utama untuk Data Barang & PIC
     col1, col2 = st.columns(2)
@@ -70,10 +70,10 @@ def show(jalankan_query, eksekusi_sql):
     """, unsafe_allow_html=True)
 
     # Tombol Utama
-    tombol_simpan = st.button("💾 SIMPAN TRANSAKSI BARANG", use_container_width=True)
+    tombol_simpan = st.button("SIMPAN TRANSAKSI BARANG", use_container_width=True)
     if tombol_simpan:
         if not pic:
-            st.error("❌ Nama Penanggung Jawab (PIC) wajib diisi!")
+            st.error("Nama Penanggung Jawab (PIC) wajib diisi!")
             return
 
         # Ambil ID asli dari sparepart yang dipilih

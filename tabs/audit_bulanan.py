@@ -3,7 +3,7 @@ from datetime import datetime
 import pandas as pd
 
 @st.dialog("Notifikasi Sistem")
-def popup_sukses(pesan, judul="🚨 Aksi Berhasil"):
+def popup_sukses(pesan, judul="Aksi Berhasil"):
     st.markdown(f"### {judul}")
     st.success(pesan)
     if st.button("Oke, Tutup"):
@@ -40,7 +40,7 @@ def show(jalankan_query, eksekusi_sql):
     # --- BAGIAN 1: TABEL MUTASI LOGISTIK SPAREPART ---
     # =========================================================================
     st.markdown("###")
-    st.subheader(f"📦 Riwayat Penggunaan Sparepart ({bulan_pilihan} {tahun_pilihan})")
+    st.subheader(f"Riwayat Penggunaan Sparepart ({bulan_pilihan} {tahun_pilihan})")
     
     query_audit_master = """
     SELECT 
@@ -89,7 +89,7 @@ def show(jalankan_query, eksekusi_sql):
         
         csv_data = df_audit.to_csv(index=False).encode('utf-8')
         st.download_button(
-            label="📥 Download Laporan Transaksi (CSV)",
+            label="Download Laporan Transaksi (CSV)",
             data=csv_data,
             file_name=f"Laporan_Stok_{bulan_pilihan}_{tahun_pilihan}.csv",
             mime="text/csv",
@@ -97,7 +97,7 @@ def show(jalankan_query, eksekusi_sql):
         )
         
         st.markdown("---")
-        st.subheader("⚠️ Pembatalan / Hapus Transaksi Logistik")
+        st.subheader("Pembatalan / Hapus Transaksi Logistik")
         list_id_transaksi = df_audit['ID Transaksi'].tolist()
         id_hapus_pilihan = st.selectbox("Pilih ID Transaksi yang Ingin Dihapus", options=list_id_transaksi)
         detail_hapus = df_audit[df_audit['ID Transaksi'] == id_hapus_pilihan].iloc[0]
@@ -107,14 +107,14 @@ def show(jalankan_query, eksekusi_sql):
             sql_delete = "DELETE FROM stock_transactions WHERE id = ?"
             sukses, pesan = eksekusi_sql(sql_delete, (int(id_hapus_pilihan),))
             if sukses:
-                st.session_state["notif_audit"] = {"pesan": f"Transaksi ID {id_hapus_pilihan} BERHASIL dihapus!", "judul": "🚨 Transaksi Dibatalkan"}
+                st.session_state["notif_audit"] = {"pesan": f"Transaksi ID {id_hapus_pilihan} BERHASIL dihapus!", "judul": "Transaksi Dibatalkan"}
                 st.rerun()
 
     # =========================================================================
     # --- BAGIAN 2: TABEL RIWAYAT SERVIS (VERSI ORIGINAL 1 SPAREPART) ---
     # =========================================================================
     st.markdown("---")
-    st.subheader(f"🛠️ Riwayat Servis & Perbaikan Alat ({bulan_pilihan} {tahun_pilihan})")
+    st.subheader(f"Riwayat Servis & Perbaikan Alat ({bulan_pilihan} {tahun_pilihan})")
     
     query_servis_induk = """
     SELECT 
@@ -160,7 +160,7 @@ def show(jalankan_query, eksekusi_sql):
             
             csv_servis = df_servis.to_csv(index=False).encode('utf-8')
             st.download_button(
-                label="📥 Download Laporan Servis (CSV)",
+                label="Download Laporan Servis (CSV)",
                 data=csv_servis,
                 file_name=f"Laporan_Servis_{bulan_pilihan}_{tahun_pilihan}.csv",
                 mime="text/csv",
@@ -168,15 +168,15 @@ def show(jalankan_query, eksekusi_sql):
             )
             
             st.markdown("---")
-            st.subheader("🗑️ Hapus Riwayat / Data Servis")
+            st.subheader("Hapus Riwayat / Data Servis")
             list_id_servis = df_servis['ID Servis'].tolist()
             id_servis_hapus = st.selectbox("Pilih ID Servis yang Ingin Dihapus", options=list_id_servis)
             
-            if st.button("❌ Hapus Log Servis Ini"):
+            if st.button("Hapus Log Servis Ini"):
                 sukses_del, pesan_del = eksekusi_sql("DELETE FROM maintenance_logs WHERE id = ?", (int(id_servis_hapus),))
                 if sukses_del:
                     st.session_state["notif_audit"] = {
                         "pesan": f"Data riwayat servis ID {id_servis_hapus} BERHASIL dihapus!",
-                        "judul": "🗑️ Log Servis Dihapus"
+                        "judul": "Log Servis Dihapus"
                     }
                     st.rerun()

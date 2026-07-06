@@ -3,13 +3,13 @@ from datetime import datetime
 
 @st.dialog("Notifikasi Servis")
 def popup_sukses_servis(pesan):
-    st.markdown("### 🛠️ Perbaikan Dicatat!")
+    st.markdown("### Perbaikan Dicatat!")
     st.success(pesan)
     if st.button("Oke, Tutup"):
         st.rerun()
 
 def show(jalankan_query, eksekusi_sql):
-    st.header("🔧 Input Data Servis & Perbaikan Alat")
+    st.header("Input Data Servis & Perbaikan Alat")
 
     if "notif_servis" in st.session_state:
         pesan_saved = st.session_state["notif_servis"]
@@ -17,7 +17,7 @@ def show(jalankan_query, eksekusi_sql):
         popup_sukses_servis(pesan_saved)
 
     # --- FORM UTAMA ---
-    st.subheader("📝 Informasi Alat & Kerusakan")
+    st.subheader("Informasi Alat & Kerusakan")
     
     col1, col2 = st.columns(2)
     with col1:
@@ -51,9 +51,9 @@ def show(jalankan_query, eksekusi_sql):
         </style>
     """, unsafe_allow_html=True)
 
-    if st.button("💾 SIMPAN DATA SERVIS", use_container_width=True):
+    if st.button("SIMPAN DATA SERVIS", use_container_width=True):
         if not nama_alat or not kode_alat or not kerusakan:
-            st.error("❌ Nama Alat, Kode Alat, dan Detail Kerusakan wajib diisi!")
+            st.error("Nama Alat, Kode Alat, dan Detail Kerusakan wajib diisi!")
             return
 
         # 1. Masukkan data ke log induk perbaikan mesin (maintenance_logs)
