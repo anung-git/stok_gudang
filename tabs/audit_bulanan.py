@@ -48,10 +48,10 @@ def show(jalankan_query, eksekusi_sql):
         t.created_at AS 'Tanggal & Jam',
         s.code AS 'Kode Part',
         s.name AS 'Nama Barang',
-        t.type AS 'Jenis (IN/OUT)',
-        t.quantity AS 'Jumlah (Pcs)',
-        t.pic_name AS 'Teknisi / Penanggung Jawab',
-        t.purpose AS 'Keterangan / Tujuan'
+        t.type AS 'Jenis Transaksi',
+        t.quantity AS 'Jumlah',
+        t.pic_name AS 'Teknisi / PIC',
+        t.purpose AS 'Keterangan'
     FROM stock_transactions t
     JOIN spareparts s ON t.sparepart_id = s.id
     ORDER BY t.created_at ASC
@@ -73,7 +73,7 @@ def show(jalankan_query, eksekusi_sql):
             df_audit = df_audit.drop(columns=['Tanggal_DT'])
 
     if df_audit.empty:
-        st.info(f"Tidak ada riwayat transaksi logistik barang pada bulan {bulan_pilihan} {tahun_pilihan}.")
+        st.info(f"Tidak ada riwayat penggunaan sparepart pada bulan {bulan_pilihan} {tahun_pilihan}.")
     else:
         df_audit = df_audit.reset_index(drop=True)
         df_audit.index = df_audit.index + 1

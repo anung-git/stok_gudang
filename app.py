@@ -83,9 +83,9 @@ def eksekusi_sql(sql, params=()):
 # ==================== INTERFACE TABS CONFIGURATION ====================
 # Membuat 5 Halaman/Tab Mandiri (Menambahkan Tab Servis Alat)
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "Stok Aktual & Pencarian Sparepart", 
+    "Servis & Perbaikan Alat",
+    "Stok Aktual & Pencarian Sparepart",
     "Transaksi Sparepart (Masuk/Keluar)",
-    "Servis & Perbaikan Alat",  # <-- Tab Baru Anda
     "Tambah Master Sparepart",
     "Riwayat Servis dan Sparepart"
 ])
@@ -96,13 +96,13 @@ from tabs import stok_aktual, transaksi, servis_alat, master_barang, audit_bulan
 
 # Mendistribusikan logika fungsi database ke masing-masing file tab
 with tab1:
-    stok_aktual.show(jalankan_query)
+    servis_alat.show(jalankan_query, eksekusi_sql)
 
 with tab2:
-    transaksi.show(jalankan_query, eksekusi_sql)
+    stok_aktual.show(jalankan_query)
 
 with tab3:
-    servis_alat.show(jalankan_query, eksekusi_sql) # <-- Mengaktifkan Tab Servis Baru
+    transaksi.show(jalankan_query, eksekusi_sql)
 
 with tab4:
     master_barang.show(jalankan_query, eksekusi_sql)

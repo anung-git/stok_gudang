@@ -37,7 +37,7 @@ def show(jalankan_query, eksekusi_sql):
         qty = st.number_input("Jumlah Barang (Pcs)", min_value=1, value=1)
     
     with col2:
-        pic = st.text_input("Nama Penanggung Jawab / PIC", placeholder="Contoh: Ahmad (Logistik) / Dani (Teknisi)")
+        pic = st.text_input("Nama Penanggung Jawab / PIC", placeholder="Contoh:  Dani (Teknisi)")
         tujuan = st.text_area("Keterangan Tujuan / Sumber Barang", placeholder="Contoh: Pembelian dari Supplier X / Digunakan untuk Rak B", height=115)
 
     # 2. Input Tunggal Tanggal & Jam Berdiri Sendiri (Satu Baris Penuh seperti Form Servis)

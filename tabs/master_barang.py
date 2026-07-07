@@ -2,9 +2,8 @@ import streamlit as st
 
 # 1. Deklarasikan fungsi Pop-up Window (Modal Dialog) di bagian atas
 @st.dialog("Notifikasi Sistem")
-def popup_sukses(pesan, jenis_icon="💾"):
-    # jenis_icon bisa disesuaikan: 💾 untuk daftar, 🆙 untuk update, 🗑️ untuk hapus
-    st.markdown(f"### {jenis_icon} Aksi Berhasil!")
+def popup_sukses(pesan, judul="Aksi Berhasil"):
+    st.markdown(f"### {judul}")
     st.success(pesan)
     st.write("Perubahan data master barang telah disimpan secara permanen ke database.")
     if st.button("Oke, Tutup"):
@@ -19,11 +18,11 @@ def show(jalankan_query, eksekusi_sql):
         del st.session_state["notif_master"] # Segera hapus memori agar tidak berulang
         popup_sukses(info_notif["pesan"], info_notif["icon"])
 
-    kode_baru = st.text_input("Kode Part Baru (Harus Unik)", placeholder="Contoh: V-BELT-A32")
-    nama_baru = st.text_input("Nama Sparepart Baru", placeholder="Contoh: V-Belt Tipe A Ukuran 32")
+    kode_baru = st.text_input("Kode Part Baru (Harus Unik)", placeholder="Contoh: S8050, LM317, 100uF/63V")
+    nama_baru = st.text_input("Nama Sparepart Baru", placeholder="Contoh: Resistor, Transistor, Kapasitor")
     stok_min = st.number_input("Batas Stok Minimum untuk Peringatan", min_value=0, value=2)
     
-    tombol_simpan = st.button("💾 Daftarkan Barang")
+    tombol_simpan = st.button("Daftarkan Barang")
     
     if tombol_simpan:
         if kode_baru and nama_baru:
@@ -31,19 +30,17 @@ def show(jalankan_query, eksekusi_sql):
             sukses, pesan = eksekusi_sql(sql_barang, (kode_baru, nama_baru, stok_min))
             
             if sukses:
-                # Simpan pesan dan icon ke memori session_state
                 st.session_state["notif_master"] = {
-                    "pesan": f"Master barang baru dengan nama '{nama_baru}' BERHASIL didaftarkan!",
-                    "icon": "💾"
+                    "pesan": f"Master barang baru dengan nama '{nama_baru}' BERHASIL didaftarkan!"
                 }
                 st.rerun()
             else:
-                st.error("❌ Gagal! Kode Part tersebut kemungkinan sudah terdaftar di sistem.")
+                st.error("Gagal! Kode Part tersebut kemungkinan sudah terdaftar di sistem.")
         else:
-            st.warning("⚠️ Mohon lengkapi Kode Part dan Nama Barang.")
+            st.warning("Mohon lengkapi Kode Part dan Nama Barang.")
 
     st.markdown("---")
-    st.subheader("🛠️ Kelola / Edit / Hapus Master Barang")
+    st.subheader("Kelola / Edit / Hapus Master Barang")
     
     df_master = jalankan_query("SELECT id, code, name, min_stock FROM spareparts")
     
@@ -60,32 +57,30 @@ def show(jalankan_query, eksekusi_sql):
         
         kol1, kol2 = st.columns(2)
         with kol1:
-            tombol_update = st.button("🆙 Simpan Perubahan Master")
+            tombol_update = st.button("Simpan Perubahan Master")
             if tombol_update:
                 sql_update = "UPDATE spareparts SET name = ?, min_stock = ? WHERE id = ?"
                 sukses, pesan = eksekusi_sql(sql_update, (edit_nama, edit_min_stock, id_edit))
                 if sukses:
                     st.session_state["notif_master"] = {
-                        "pesan": f"Data master untuk '{edit_nama}' BERHASIL diperbarui!",
-                        "icon": "🆙"
+                        "pesan": f"Data master untuk '{edit_nama}' BERHASIL diperbarui!"
                     }
                     st.rerun()
                 else:
-                    st.error(f"❌ Gagal memperbarui: {pesan}")
+                    st.error(f"Gagal memperbarui: {pesan}")
                     
         with kol2:
-            tombol_hapus_master = st.button("❌ Hapus Barang Ini dari Sistem")
+            tombol_hapus_master = st.button("Hapus Barang Ini dari Sistem")
             if tombol_hapus_master:
                 sql_delete_master = "DELETE FROM spareparts WHERE id = ?"
                 sukses, pesan = eksekusi_sql(sql_delete_master, (id_edit,))
                 if sukses:
                     st.session_state["notif_master"] = {
-                        "pesan": f"Barang '{detail_barang['name']}' BERHASIL dihapus total dari sistem!",
-                        "icon": "🗑️"
+                        "pesan": f"Barang '{detail_barang['name']}' BERHASIL dihapus total dari sistem!"
                     }
                     st.rerun()
                 else:
                     # Gagal karena terikat relasi database (ditolak foreign key)
-                    st.error(f"❌ {pesan}")
+                    st.error(f"{pesan}")
     else:
         st.info("Belum ada barang terdaftar yang bisa dikelola.")

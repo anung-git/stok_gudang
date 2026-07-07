@@ -21,8 +21,8 @@ def show(jalankan_query, eksekusi_sql):
     
     col1, col2 = st.columns(2)
     with col1:
-        nama_alat = st.text_input("Nama Alat / Mesin", placeholder="Contoh: Mesin Packing A")
-        kode_alat = st.text_input("Kode / ID Alat", placeholder="Contoh: MC-PK-01")
+        nama_alat = st.text_input("Nama Alat / Mesin", placeholder="Contoh: Frimator")
+        kode_alat = st.text_input("Kode / ID Alat", placeholder="Contoh: NC-001")
     with col2:
         tgl_masuk = st.datetime_input("Tanggal & Jam Masuk", value=datetime.now(), key="tgl_msk")
         tgl_selesai = st.datetime_input("Tanggal & Jam Selesai Perbaikan", value=datetime.now(), key="tgl_sls")
