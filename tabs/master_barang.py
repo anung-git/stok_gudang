@@ -16,7 +16,7 @@ def show(jalankan_query, eksekusi_sql):
     if "notif_master" in st.session_state:
         info_notif = st.session_state["notif_master"]
         del st.session_state["notif_master"] # Segera hapus memori agar tidak berulang
-        popup_sukses(info_notif["pesan"], info_notif["icon"])
+        popup_sukses(info_notif["pesan"])
 
     kode_baru = st.text_input("Kode Part Baru (Harus Unik)", placeholder="Contoh: S8050, LM317, 100uF/63V")
     nama_baru = st.text_input("Nama Sparepart Baru", placeholder="Contoh: Resistor, Transistor, Kapasitor")
