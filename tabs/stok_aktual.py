@@ -4,7 +4,7 @@ def show(jalankan_query):
     st.header("Status Stok Gudang Saat Ini")
     st.write("Cari status ketersediaan sparepart berdasarkan nama barang atau kode part.")
     
-    kata_kunci = st.text_input("🔍 Cari berdasarkan Nama Barang atau Kode Part...", placeholder="Contoh: V-Belt, BAUT...")
+    kata_kunci = st.text_input("🔍 Cari berdasarkan Nama Barang atau Kode Part...", placeholder="Contoh: Transistor, Resistor...")
     
     query_stok = """
     SELECT 
