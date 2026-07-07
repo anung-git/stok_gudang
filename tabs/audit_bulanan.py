@@ -9,6 +9,21 @@ def popup_sukses(pesan, judul="Aksi Berhasil"):
     if st.button("Oke, Tutup"):
         st.rerun()
 
+
+def filter_riwayat_servis(df, kata_kunci):
+    if df.empty or not kata_kunci:
+        return df
+
+    kata_kunci = kata_kunci.strip().lower()
+    if not kata_kunci:
+        return df
+
+    return df[
+        df['Nama Alat'].fillna('').str.lower().str.contains(kata_kunci, na=False) |
+        df['Kode Alat'].fillna('').str.lower().str.contains(kata_kunci, na=False)
+    ].copy()
+
+
 def show(jalankan_query, eksekusi_sql):
     if "notif_audit" in st.session_state:
         info_notif = st.session_state["notif_audit"]
@@ -28,7 +43,7 @@ def show(jalankan_query, eksekusi_sql):
         angka_bulan = str(list_bulan.index(bulan_pilihan) + 1).zfill(2)
 
     with kolom2:
-        list_tahun = list(range(2026, 2051))
+        list_tahun = list(range(2025, 2051))
         tahun_default = datetime.now().year
         tahun_pilihan = st.selectbox(
             "Pilih Tahun",
@@ -73,7 +88,7 @@ def show(jalankan_query, eksekusi_sql):
             df_audit = df_audit.drop(columns=['Tanggal_DT'])
 
     if df_audit.empty:
-        st.info(f"Tidak ada riwayat penggunaan sparepart pada bulan {bulan_pilihan} {tahun_pilihan}.")
+        st.info(f"Tidak ada ripenggunaan sparepartgarang pada bulan {bulan_pilihan} {tahun_pilihan}.")
     else:
         df_audit = df_audit.reset_index(drop=True)
         df_audit.index = df_audit.index + 1
@@ -111,7 +126,7 @@ def show(jalankan_query, eksekusi_sql):
                 st.rerun()
 
     # =========================================================================
-    # --- BAGIAN 2: TABEL RIWAYAT SERVIS (VERSI ORIGINAL 1 SPAREPART) ---
+    # --- BAGIAN 2: TABEL RIWAYAT SERVIS (BERDASARKAN BULAN) ---
     # =========================================================================
     st.markdown("---")
     st.subheader(f"Riwayat Servis & Perbaikan Alat ({bulan_pilihan} {tahun_pilihan})")
@@ -134,7 +149,6 @@ def show(jalankan_query, eksekusi_sql):
     if df_servis_all.empty:
         st.info("Tidak ada aktivitas servis/perbaikan mesin yang tercatat di sistem.")
     else:
-        # Kode di bawah ini sudah diperbaiki penutupan tanda kurungnya (Anti SyntaxError)
         df_servis_all['Waktu Masuk DT'] = pd.to_datetime(df_servis_all['Waktu Masuk'], errors='coerce')
         
         df_servis = df_servis_all[
@@ -180,3 +194,27 @@ def show(jalankan_query, eksekusi_sql):
                         "judul": "Log Servis Dihapus"
                     }
                     st.rerun()
+
+    st.markdown("---")
+    st.subheader("Pencarian Riwayat Servis")
+    st.caption("Filter ini berdiri sendiri dan tidak dipengaruhi oleh pemilihan bulan atau tahun.")
+    kata_kunci_servis = st.text_input(
+        "Cari berdasarkan Nama Alat atau Kode Alat",
+        placeholder="Contoh: Frimator atau NC-001",
+        key="pencarian_servis_terpisah"
+    )
+
+    if kata_kunci_servis.strip():
+        df_servis_cari = filter_riwayat_servis(df_servis_all.copy(), kata_kunci_servis)
+        if df_servis_cari.empty:
+            st.info("Tidak ada riwayat servis yang cocok dengan pencarian tersebut.")
+        else:
+            df_servis_cari = df_servis_cari.reset_index(drop=True)
+            df_servis_cari.index = df_servis_cari.index + 1
+            if 'ID Servis' in df_servis_cari.columns:
+                cols = [c for c in df_servis_cari.columns if c != 'ID Servis'] + ['ID Servis']
+                df_servis_cari = df_servis_cari[cols]
+            st.write(f"Menampilkan **{len(df_servis_cari)} hasil pencarian**:")
+            st.dataframe(df_servis_cari, use_container_width=True)
+    else:
+        st.info("Ketik nama alat atau kode alat untuk menampilkan tabel pencarian yang terpisah.")
