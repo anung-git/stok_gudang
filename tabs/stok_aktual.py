@@ -29,6 +29,13 @@ def show(jalankan_query):
     else:
         df_filtered = df_stok
 
+    # Tampilkan kolom dengan urutan: Nama Barang, Kode Part, ...
+    cols_preferred = ['Nama Barang', 'Kode Part', 'Lokasi Penyimpanan', 'Stok Min', 'Stok Sekarang']
+    existing_cols = [c for c in cols_preferred if c in df_filtered.columns]
+    # Tambahkan kolom lain di akhir jika ada
+    other_cols = [c for c in df_filtered.columns if c not in existing_cols]
+    df_filtered = df_filtered[existing_cols + other_cols]
+
     if df_filtered.empty:
         st.warning(f"Tidak ada sparepart yang cocok dengan kata kunci '{kata_kunci}'.")
     else:
