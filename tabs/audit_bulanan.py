@@ -141,7 +141,7 @@ def show(jalankan_query, eksekusi_sql):
         m.completion_date AS 'Waktu Selesai',
         m.action_taken AS 'Tindakan Perbaikan'
     FROM maintenance_logs m
-    ORDER BY m.entry_date ASC
+    ORDER BY m.entry_date DESC
     """
     
     df_servis_all = jalankan_query(query_servis_induk)
@@ -209,6 +209,14 @@ def show(jalankan_query, eksekusi_sql):
         if df_servis_cari.empty:
             st.info("Tidak ada riwayat servis yang cocok dengan pencarian tersebut.")
         else:
+            # Usahakan hasil pencarian menampilkan yang terbaru di paling atas
+            if 'Waktu Masuk' in df_servis_cari.columns:
+                try:
+                    df_servis_cari['_WaktuMasuk_DT'] = pd.to_datetime(df_servis_cari['Waktu Masuk'], errors='coerce')
+                    df_servis_cari = df_servis_cari.sort_values(by='_WaktuMasuk_DT', ascending=False)
+                    df_servis_cari = df_servis_cari.drop(columns=['_WaktuMasuk_DT'])
+                except Exception:
+                    pass
             df_servis_cari = df_servis_cari.reset_index(drop=True)
             df_servis_cari.index = df_servis_cari.index + 1
             if 'ID Servis' in df_servis_cari.columns:
