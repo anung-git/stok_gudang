@@ -1,61 +1,14 @@
 import streamlit as st
 import sqlite3
 import pandas as pd
+from init_db import inisialisasi_database
 
 # ==================== 100% OFFLINE CONFIGURATION ====================
 st.set_page_config(page_title="Stok & Servis Gudang", layout="wide")
 st.title("Sistem Servis dan Sparepart Larissa Simanjuntak")
 
 # ==================== INITIALIZE DATABASE & TABLES ====================
-def inisialisasi_database():
-    conn = sqlite3.connect('gudang.db')
-    cursor = conn.cursor()
-    
-    # 1. Pastikan tabel master spareparts ada
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS spareparts (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        code TEXT UNIQUE NOT NULL,
-        name TEXT NOT NULL,
-        min_stock INTEGER DEFAULT 2
-    );
-    """)
-    
-    # 2. Pastikan tabel transaksi stok ada
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS stock_transactions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        sparepart_id INTEGER NOT NULL,
-        type TEXT NOT NULL, -- 'IN' atau 'OUT'
-        quantity INTEGER NOT NULL,
-        pic_name TEXT NOT NULL,
-        purpose TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (sparepart_id) REFERENCES spareparts(id)
-    );
-    """)
-    
-    # 3. BARU: Pastikan tabel log servis alat ada
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS maintenance_logs (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        entry_date DATETIME NOT NULL,
-        device_name TEXT NOT NULL,
-        device_code TEXT NOT NULL,
-        damage_info TEXT NOT NULL,
-        completion_date DATETIME,
-        action_taken TEXT,
-        notes TEXT,
-        sparepart_id INTEGER,
-        sparepart_qty INTEGER DEFAULT 0,
-        FOREIGN KEY (sparepart_id) REFERENCES spareparts(id)
-    );
-    """)
-
-    conn.commit()
-    conn.close()
-
-# Jalankan pembuatan database otomatis saat script di-run
+# Semua pembuatan tabel dipusatkan di init_db.py
 inisialisasi_database()
 
 # ==================== GLOBAL HELPER FUNCTIONS ====================

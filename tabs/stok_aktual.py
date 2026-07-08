@@ -10,6 +10,7 @@ def show(jalankan_query):
     SELECT 
         s.code AS 'Kode Part',
         s.name AS 'Nama Barang',
+        s.location AS 'Lokasi Penyimpanan',
         s.min_stock AS 'Stok Min',
         COALESCE(SUM(CASE WHEN t.type = 'IN' THEN t.quantity ELSE 0 END), 0) -
         COALESCE(SUM(CASE WHEN t.type = 'OUT' THEN t.quantity ELSE 0 END), 0) AS 'Stok Sekarang'
@@ -22,7 +23,8 @@ def show(jalankan_query):
     if kata_kunci:
         df_filtered = df_stok[
             df_stok['Kode Part'].str.contains(kata_kunci, case=False, na=False) |
-            df_stok['Nama Barang'].str.contains(kata_kunci, case=False, na=False)
+            df_stok['Nama Barang'].str.contains(kata_kunci, case=False, na=False) |
+            df_stok['Lokasi Penyimpanan'].fillna('').str.contains(kata_kunci, case=False, na=False)
         ]
     else:
         df_filtered = df_stok

@@ -17,7 +17,7 @@ def show(jalankan_query, eksekusi_sql):
         popup_sukses_transaksi(pesan_saved)
 
     # Ambil data master sparepart untuk pilihan dropdown
-    df_spareparts = jalankan_query("SELECT id, code, name FROM spareparts")
+    df_spareparts = jalankan_query("SELECT id, code, name, location FROM spareparts")
     
     if df_spareparts.empty:
         st.warning("Belum ada data barang di Master Gudang. Silakan isi tab 'Tambah Master Barang' terlebih dahulu.")
@@ -33,6 +33,9 @@ def show(jalankan_query, eksekusi_sql):
     col1, col2 = st.columns(2)
     with col1:
         pilihan_barang = st.selectbox("Pilih Barang / Sparepart", options=df_spareparts['display'].tolist())
+        detail_barang = df_spareparts[df_spareparts['display'] == pilihan_barang].iloc[0]
+        lokasi_barang = detail_barang['location'] or '-'
+        st.caption(f"Lokasi penyimpanan saat ini: {lokasi_barang}")
         jenis_transaksi = st.selectbox("Jenis Transaksi", options=["IN (Barang Masuk / Restock)", "OUT (Barang Keluar / Pakai)"])
         qty = st.number_input("Jumlah Barang (Pcs)", min_value=1, value=1)
     
@@ -77,7 +80,6 @@ def show(jalankan_query, eksekusi_sql):
             return
 
         # Ambil ID asli dari sparepart yang dipilih
-        detail_barang = df_spareparts[df_spareparts['display'] == pilihan_barang].iloc[0]
         sparepart_id = int(detail_barang['id'])
         nama_barang_terpilih = detail_barang['name']
 

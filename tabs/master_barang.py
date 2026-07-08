@@ -20,14 +20,15 @@ def show(jalankan_query, eksekusi_sql):
 
     kode_baru = st.text_input("Kode Part Baru (Harus Unik)", placeholder="Contoh: S8050, LM317, 100uF/63V")
     nama_baru = st.text_input("Nama Sparepart Baru", placeholder="Contoh: Resistor, Transistor, Kapasitor")
+    lokasi_baru = st.text_input("Lokasi Penyimpanan", placeholder="Contoh: Rak A / Lemari B / Gudang Utama")
     stok_min = st.number_input("Batas Stok Minimum untuk Peringatan", min_value=0, value=2)
     
     tombol_simpan = st.button("Daftarkan Barang")
     
     if tombol_simpan:
         if kode_baru and nama_baru:
-            sql_barang = "INSERT INTO spareparts (code, name, min_stock) VALUES (?, ?, ?)"
-            sukses, pesan = eksekusi_sql(sql_barang, (kode_baru, nama_baru, stok_min))
+            sql_barang = "INSERT INTO spareparts (code, name, min_stock, location) VALUES (?, ?, ?, ?)"
+            sukses, pesan = eksekusi_sql(sql_barang, (kode_baru, nama_baru, stok_min, lokasi_baru.strip()))
             
             if sukses:
                 st.session_state["notif_master"] = {
@@ -42,25 +43,28 @@ def show(jalankan_query, eksekusi_sql):
     st.markdown("---")
     st.subheader("Kelola / Edit / Hapus Master Barang")
     
-    df_master = jalankan_query("SELECT id, code, name, min_stock FROM spareparts")
+    df_master = jalankan_query("SELECT id, code, name, min_stock, location FROM spareparts")
     
     if not df_master.empty:
         df_master['display'] = df_master['code'] + " - " + df_master['name']
-        barang_kelola = st.selectbox("Pilih Barang yang Akan Diedit / Dihapus", options=df_master['display'].tolist())
+        df_master['display_with_location'] = df_master['display'] + df_master['location'].fillna('').astype(str).str.strip().apply(lambda v: f" | Lokasi: {v}" if v else "")
+        barang_kelola = st.selectbox("Pilih Barang yang Akan Diedit / Dihapus", options=df_master['display_with_location'].tolist())
         
-        detail_barang = df_master[df_master['display'] == barang_kelola].iloc[0]
+        detail_barang = df_master[df_master['display_with_location'] == barang_kelola].iloc[0]
         id_edit = int(detail_barang['id'])
         
         st.write(f"**Mode Modifikasi data untuk ID: {id_edit}**")
+        st.caption(f"Lokasi saat ini: {detail_barang['location'] or '-'}")
         edit_nama = st.text_input("Ubah Nama Barang", value=detail_barang['name'])
+        edit_lokasi = st.text_input("Ubah Lokasi Penyimpanan", value=detail_barang['location'] or '')
         edit_min_stock = st.number_input("Ubah Batas Stok Minimum", min_value=0, value=int(detail_barang['min_stock']))
         
         kol1, kol2 = st.columns(2)
         with kol1:
             tombol_update = st.button("Simpan Perubahan Master")
             if tombol_update:
-                sql_update = "UPDATE spareparts SET name = ?, min_stock = ? WHERE id = ?"
-                sukses, pesan = eksekusi_sql(sql_update, (edit_nama, edit_min_stock, id_edit))
+                sql_update = "UPDATE spareparts SET name = ?, min_stock = ?, location = ? WHERE id = ?"
+                sukses, pesan = eksekusi_sql(sql_update, (edit_nama, edit_min_stock, edit_lokasi.strip(), id_edit))
                 if sukses:
                     st.session_state["notif_master"] = {
                         "pesan": f"Data master untuk '{edit_nama}' BERHASIL diperbarui!"
